@@ -1,30 +1,31 @@
 import Logo from "./components/Logo/Logo";
+import Player from "./components/Player/Player";
+import SongListSection from "./components/SongListSection/SongListSection";
 import UserProfile from "./components/UserProfile/UserProfile";
+
+
 
 const Layout = () => {
   return (
-    <div className="flex ">
-      <div className="first-section  hidden xl:block w-[20%] p-5 ">
-        <div className="flex flex-col justify-between">
+    <div className="flex text-white ">
+      <div className="first-section h-screen hidden xl:block w-[20%] p-5 ">
+        <div className="flex flex-col h-full justify-between">
           <Logo />
           <UserProfile/>
         </div>
       </div>
-      <div className="second-section  hidden sm:block w-[30%] p-5 overflow-hidden">
-        <div className="bg-gray-300 xl:hidden p-4 h-20 sticky top-0 z-10">
-          Swiggy logo
-        </div>
-        <div className="bg-gray-300 p-4 h-20 sticky top-0 z-10">
-          Header (Sticky)
-        </div>
-        <div className="bg-gray-400 p-4 sticky top-14 h-20 z-10">
-          Search Bar (Sticky)
-        </div>
-        <div className="overflow-y-auto flex-1 p-4 bg-white overflow-scroll">
-          lorem1100
-        </div>
+      <div className="second-section hidden sm:block w-[30%] p-5  h-full">
+
+        <SongListSection/>
       </div>
-      <div className="third-section  sm:w-[50%] p-5"></div>
+      <div className="third-section  sm:w-[50%] p-5">
+      <div className="sm:hidden p-4 h-20 sticky top-0 z-10">
+        <Logo />
+        </div>
+     <div className="h-full w-full flex items-center justify-center">
+     <Player/>
+     </div>
+      </div>
     </div>
   );
 };
