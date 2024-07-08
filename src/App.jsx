@@ -1,9 +1,16 @@
-import "./App.css";
-import Layout from "./Layout";
+import React from 'react';
+import { SongProvider } from './context/SongContext';
+import { BackgroundProvider } from './context/BackgroundContext'; 
+import Layout from './Layout';
 
-
-function App() {
-  return  <Layout/>;
-}
+const App = () => {
+  return (
+    <SongProvider>
+      <BackgroundProvider>
+        <Layout />
+      </BackgroundProvider>
+    </SongProvider>
+  );
+};
 
 export default App;

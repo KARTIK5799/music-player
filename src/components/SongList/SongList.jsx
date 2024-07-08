@@ -1,50 +1,68 @@
-import React from 'react'
-import SongListItem from './SongListItem'
+import React, { useState, useEffect } from "react";
+import SongListItem from "./SongListItem";
+import { FetchSongs } from "../../Api/SongData";
+import { useSongContext } from "../../context/SongContext";
 
-const SongList = ({isTopTrack}) => {
-    const songs = [
-        { title: "Song 1", cover: "cover1.jpg", duration: "03:45" },
-        { title: "Song 2", cover: "cover2.jpg", duration: "04:20" },
-        { title: "Song 3", cover: "cover3.jpg", duration: "02:50" },
-     
-       
-      ];
-      const topSongs = [
-        { title: "Top Song 1", cover: "top_cover1.jpg", duration: "03:45" },
-        { title: "Top Song 2", cover: "top_cover2.jpg", duration: "04:20" },
-        { title: "Top Song 3", cover: "top_cover3.jpg", duration: "02:50" },
-        { title: "Top Song 4", cover: "top_cover4.jpg", duration: "05:10" },
-        { title: "Top Song 5", cover: "top_cover5.jpg", duration: "03:30" },
-        { title: "Top Song 3", cover: "top_cover3.jpg", duration: "02:50" },
-        { title: "Top Song 4", cover: "top_cover4.jpg", duration: "05:10" },
-        { title: "Top Song 5", cover: "top_cover5.jpg", duration: "03:30" },
-        { title: "Top Song 3", cover: "top_cover3.jpg", duration: "02:50" },
-        { title: "Top Song 4", cover: "top_cover4.jpg", duration: "05:10" },
-        { title: "Top Song 5", cover: "top_cover5.jpg", duration: "03:30" },
-        { title: "Top Song 3", cover: "top_cover3.jpg", duration: "02:50" },
-        { title: "Top Song 4", cover: "top_cover4.jpg", duration: "05:10" },
-        { title: "Top Song 22", cover: "top_cover5.jpg", duration: "03:30" },
-        { title: "Top Song 4", cover: "top_cover4.jpg", duration: "05:10" },
-        { title: "Top Song 5", cover: "top_cover5.jpg", duration: "03:30" },
-        { title: "Top Song 3", cover: "top_cover3.jpg", duration: "02:50" },
-        { title: "Top Song 4", cover: "top_cover4.jpg", duration: "05:10" },
-        { title: "Top Song 5", cover: "top_cover5.jpg", duration: "03:30" },
-        { title: "Top Song 3", cover: "top_cover3.jpg", duration: "02:50" },
-        { title: "Top Song 4", cover: "top_cover4.jpg", duration: "05:10" },
-        { title: "Top Song 22", cover: "top_cover5.jpg", duration: "03:30" }
-      ];
-      
+const SongList = ({ isTopTrack, searchQuery }) => {
+  const [songs, setSongs] = useState([]);
+  const [topSongs, setTopSongs] = useState([]);
+  const [filteredSongs, setFilteredSongs] = useState([]);
+  const { songList, setSongList, setCurrentSong } = useSongContext();
+
+  const fetchData = async () => {
+    try {
+      const data = await FetchSongs();
+      if (data) {
+        const allSongs = data.data;
+        setSongList(allSongs);
+        setSongs(allSongs);
+        const filteredTopSongs = allSongs.filter((song) => song.top_track);
+        setFilteredSongs(isTopTrack ? filteredTopSongs : allSongs);
+      }
+    } catch (error) {
+      console.error("Failed to fetch songs:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const filterSongs = (songs) => {
+      if (!searchQuery) return songs;
+      return songs.filter((song) =>
+        song.name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    };
+
+    if (isTopTrack) {
+      setFilteredSongs(filterSongs(topSongs));
+    } else {
+      setFilteredSongs(filterSongs(songs));
+    }
+  }, [searchQuery, isTopTrack, songs, topSongs]);
+
+  const handleSongClick = (song) => {
+    setCurrentSong(song);
+  };
   return (
-    <div className="overflow-scroll h-[98%] px-5 mb-24">
-    
-     {!isTopTrack? <>
-     {songs.map((song, index) => (
-      <SongListItem key={index} songTitle={song.title} songCover={song.cover} songDurantion={song.duration}/>
-      ))}</>:<>{topSongs.map((topSong, index) => (
-        <SongListItem key={index} songTitle={topSong.title} songCover={topSong.cover} songDurantion={topSong.duration}/>
-        ))}</>}
-        </div>
-  )
-}
+    <div className="overflow-scroll h-full px-5 mb-24">
+      {filteredSongs.length > 0 ? (
+        filteredSongs.map((song, index) => (
+          <SongListItem
+            key={index}
+            songTitle={song.name}
+            songCover={song.cover}
+            songUrl={song.url}
+            onClick={() => handleSongClick(song)}
+          />
+        ))
+      ) : (
+        <p>No songs found</p>
+      )}
+    </div>
+  );
+};
 
-export default SongList
+export default SongList;

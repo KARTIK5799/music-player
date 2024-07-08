@@ -1,36 +1,145 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { IoPlayBack, IoPlaySkipBack, IoPlaySkipForward } from "react-icons/io5";
 import { FaPlay, FaPause } from "react-icons/fa";
 import { AiFillSound } from "react-icons/ai";
 import { IoIosMore } from "react-icons/io";
+import useAudioDuration from '../../hooks/useAudioDuration';
+import { useSongContext } from '../../context/SongContext';
+import { MdOutlinePlaylistAdd } from "react-icons/md";
+import { CiHeart } from "react-icons/ci";
+import { IoMdShareAlt } from "react-icons/io";
+import { IoMdClose } from "react-icons/io";
+
+const Controls = ({ isPlaying, onPlayPause, songUrl }) => {
+  const [audio, setAudio] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [rangeValue, setRangeValue] = useState(0);
+  const [volumeVisible,setVolumeVisible]=useState(false);
+  const [moreOptionVisible,setmoreOptionVisible]=useState(false);
+
+  const duration = useAudioDuration(songUrl);
+  
+  const { nextSong, prevSong } = useSongContext(); 
+
+  useEffect(() => {
+    if (audio) {
+      if (isPlaying) {
+        audio.play();
+      } else {
+        audio.pause();
+      }
+    }
+    return () => {
+      if (audio) {
+        audio.pause();
+        setAudio(null);
+      }
+    };
+  }, [isPlaying, audio]);
+
+  useEffect(() => {
+    if (songUrl) {
+      const newAudio = new Audio(songUrl);
+      setLoading(true);
+      newAudio.oncanplaythrough = () => {
+        setLoading(false);
+      };
+      newAudio.onended = () => {
+        setAudio(null);
+      };
+      newAudio.ontimeupdate = () => {
+        setCurrentTime(newAudio.currentTime);
+        setRangeValue(newAudio.currentTime);
+      };
+      setAudio(newAudio);
+    }
+  }, [songUrl]);
+
+  const handleRangeChange = (e) => {
+    const newTime = parseFloat(e.target.value);
+    if (audio) {
+      audio.currentTime = newTime;
+      setCurrentTime(newTime);
+    }
+    setRangeValue(newTime);
+  };
+
+  const formatDuration = (time) => {
+    if (time === null) return '00:00';
+
+    const minutes = Math.floor((time % 3600) / 60);
+    const seconds = Math.floor(time % 60);
+
+    return [
+      minutes.toString().padStart(2, '0'),
+      seconds.toString().padStart(2, '0')
+    ].join(':');
+  };
 
 
-const Controls = ({isPlaying}) => {
+  const  handleVolume=()=>{
+    setVolumeVisible(!volumeVisible)
+  }
+  const  handleMore=()=>{
+    setmoreOptionVisible(!moreOptionVisible)
+  }
   return (
-    <div className="text-white  flex flex-col items-center">
+    <div className="text-white flex flex-col items-center">
       <div className="w-full mb-2">
-        <input type="range" className="w-full" />
+        <div className="flex w-full justify-between">
+          <p>{formatDuration(currentTime)}</p>
+          <p>{formatDuration(duration)}</p>
+        </div>
+        
+        <input
+          type="range"
+          className="w-full"
+          min="0"
+          max={duration || 0}
+          value={rangeValue}
+          onChange={handleRangeChange}
+          disabled
+        />
       </div>
       <div className="flex items-center w-full justify-between space-x-2">
-        <div className="p-3 bg-gray-700 rounded-full cursor-pointer hover:bg-gray-600">
-        <IoIosMore />
+      <div className="p-3 bg-gray-700 relative rounded-full cursor-pointer hover:bg-gray-600 " onClick={handleMore}>
+          {!moreOptionVisible ?<IoIosMore />:<IoMdClose />}
+         {moreOptionVisible && <div className='absolute bg-gray-700 top-[-6.5rem] flex-col w-[10rem]  border left-[-3.5rem]  px-3 py-3 rounded-lg  flex'>
+            <h2 className='flex gap-2 items-center'> <MdOutlinePlaylistAdd /> Add to Playlist</h2>
+            <h2 className='flex gap-2 items-center'><CiHeart /> Like Music</h2>
+            <h2 className='flex gap-2 items-center'><IoMdShareAlt /> Share</h2>
+
+          </div>}
         </div>
-       <div className='flex gap-5'>
-       <div className="p-3  cursor-pointer hover:bg-gray-600">
+        <div className='flex gap-5'>
+        <div className="p-3 cursor-pointer hover:bg-gray-600 rounded-full" onClick={prevSong}>
           <IoPlaySkipBack className="text-xl" />
         </div>
-        {isPlaying?<div className="p-3 bg-white rounded-full cursor-pointer hover:bg-gray-200 text-black">
-          <FaPlay className="text-xl" />
-        </div>:
-        <div className="p-3 bg-white rounded-full cursor-pointer hover:bg-gray-200 text-black">
-          <FaPause className="text-xl" />
-        </div>}
-        <div className="p-3  cursor-pointer hover:bg-gray-600">
+        {loading ? (
+          <div className="p-3 bg-gray-700 rounded-full cursor-pointer">
+            <div className="w-6 h-6 border-4 border-white border-t-transparent border-solid rounded-full animate-spin"></div>
+          </div>
+        ) : isPlaying ? (
+          <div className="p-3 bg-white rounded-full cursor-pointer hover:bg-gray-200 text-black" onClick={onPlayPause}>
+            <FaPause className="text-xl" />
+          </div>
+        ) : (
+          <div className="p-3 bg-white rounded-full cursor-pointer hover:bg-gray-200 text-black" onClick={onPlayPause}>
+            <FaPlay className="text-xl" />
+          </div>
+        )}
+        <div className="p-3 cursor-pointer hover:bg-gray-600 rounded-full" onClick={nextSong}>
           <IoPlaySkipForward className="text-xl" />
         </div>
-       </div>
-        <div className="p-3 bg-gray-700 rounded-full cursor-pointer hover:bg-gray-600">
-          <AiFillSound className="text-xl" />
+        </div>
+        <div className="p-3 bg-gray-700 rounded-full cursor-pointer relative hover:bg-gray-600 " onClick={handleVolume}>
+         
+       {volumeVisible &&   <div className='absolute bg-gray-700 top-[-5rem]   left-[-2rem]  px-3 py-3 rounded-lg transform rotate-[90deg] flex'>
+            <input type="range" name="" id=""  className='transform rotate-[180deg] w-20'/>
+
+          </div>}
+         { !volumeVisible?<AiFillSound className="text-xl" />:<IoMdClose />}
         </div>
       </div>
     </div>

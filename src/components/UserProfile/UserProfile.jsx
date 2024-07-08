@@ -5,7 +5,7 @@ import ProfileDrawer from '../ProfileDrawer/ProfileDrawer';
 import { IoCloseCircleOutline } from "react-icons/io5";
 
 
-const UserProfile = () => {
+const UserProfile = ({isMobile}) => {
     const [isProfileOpen,setIsProfileOpen]=useState(false);
 
     const toggleDrawer=()=>{
@@ -13,9 +13,9 @@ const UserProfile = () => {
     }
   return (
     <>
-    {isProfileOpen && <ProfileDrawer onClose={toggleDrawer}/>}
-    <div className={`${styles.shine} ${styles.pointer}`} onClick={toggleDrawer}>
-      {isProfileOpen?<IoCloseCircleOutline color='#fff'/>:<img src={Profile} alt="" className="h-full w-full object-cover" />}
+    {isProfileOpen && <ProfileDrawer onClose={toggleDrawer} isMobile={isMobile}/>}
+    <div className={`${styles.shine} ${styles.pointer} `} onClick={toggleDrawer}>
+      {isProfileOpen?<IoCloseCircleOutline size={50} color='#fff'/>:<img src={Profile} alt="" className="h-full w-full px-2 object-cover" />}
 
     </div>
     </>
