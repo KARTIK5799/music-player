@@ -27,19 +27,19 @@ const Layout = () => {
       </div>
     
       <div className="third-section  flex  flex-col  md:w-[50vw] lg:w-[50%] mx-2 pb-5 sm:p-5">
-        <div className="sm:hidden  p-4 h-20 sticky top-0 z-10">
+        <div className="sm:hidden  p-4 h-[10%] sticky top-0 z-10">
         <div className="flex  h-full justify-between">
           <Logo />
           <UserProfile isMobile={true} />
         </div>
         </div>
-        <div className=" w-full flex items-center justify-center">
+        <div className=" w-full h-full flex items-center justify-center">
           <Player />
         </div>
       </div>
       <div 
         style={{ backgroundColor }} 
-        className={`last-section sm:hidden shadow-lg w-screen h-auto border-t rounded-xl fixed md:w-[40vw] z-50 lg:w-[30%] pt-2 px-5 bottom-0 transition-transform duration-300 ${isLastSectionVisible ? 'transform translate-y-10' : 'transform translate-y-[98vh]'}`}
+        className={`last-section sm:hidden shadow-lg w-screen h-screen border-t rounded-xl fixed md:w-[40vw] z-50 lg:w-[30%] pt-2 px-5 bottom-0 transition-transform duration-300 ${isLastSectionVisible ? 'transform translate-y-[10%]' : 'transform translate-y-[95%]'}`}
       >
         <div className='w-full flex flex-col items-center justify-center' onClick={toggleLastSection}>
           <div className='w-[5rem] bg-gray-700 h-1 rounded-full cursor-pointer' ></div>

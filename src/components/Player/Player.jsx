@@ -4,7 +4,7 @@ import Controls from '../Controls/Controls';
 import { useSongContext } from '../../context/SongContext';
 import { useBackgroundContext } from '../../context/BackgroundContext'; 
 
-const getAverageColor = (image,tintPercentage = 0.7) => {
+const getAverageColor = (image, tintPercentage = 0.7) => {
   return new Promise((resolve) => {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
@@ -33,8 +33,7 @@ const getAverageColor = (image,tintPercentage = 0.7) => {
 };
 
 const Player = () => {
-  const { currentSong } = useSongContext();
-  const [isPlayed, setIsPlayed] = useState(false);
+  const { currentSong ,isPlaying, setIsPlaying } = useSongContext();
   const { setBackgroundColor } = useBackgroundContext();
 
   useEffect(() => {
@@ -50,7 +49,7 @@ const Player = () => {
   }, [currentSong, setBackgroundColor]);
 
   const handlePlayPause = () => {
-    setIsPlayed(prevState => !prevState);
+    setIsPlaying(prevState => !prevState);
   };
 
   if (!currentSong) return <div>No song is currently playing</div>;
@@ -58,16 +57,16 @@ const Player = () => {
   const coverUrl = currentSong.cover ? `https://cms.samespace.com/assets/${currentSong.cover}` : cover;
 
   return (
-    <div className='w-[480px] h-[700px]  p-5'>
+    <div className='w-[95%] h-[90%]  md:w-[95%] md:h-[80%] flex justify-center flex-col p-5'>
       <div className='text-white mb-4'>
         <h2 className='text-3xl font-bold'>{currentSong.name}</h2>
         <p className='text-gray-400 text-xl'>{currentSong.artist}</p>
       </div>
-      <div className='w-full bg-slate-500 h-[480px] rounded-md'>
+      <div className='w-full bg-slate-500 h-[27rem] rounded-md overflow-hidden'>
         <img src={coverUrl} alt={currentSong.name} className='object-cover h-full w-full'/>
       </div>
       <div className='mt-4'>
-        <Controls isPlaying={isPlayed} onPlayPause={handlePlayPause} songUrl={currentSong.url}/>
+        <Controls  onPlayPause={handlePlayPause} songUrl={currentSong.url}/>
       </div>
     </div>
   );

@@ -7,7 +7,7 @@ const SongList = ({ isTopTrack, searchQuery }) => {
   const [songs, setSongs] = useState([]);
   const [topSongs, setTopSongs] = useState([]);
   const [filteredSongs, setFilteredSongs] = useState([]);
-  const { songList, setSongList, setCurrentSong } = useSongContext();
+  const { songList, setSongList, setCurrentSong,setIsPlaying } = useSongContext();
 
   const fetchData = async () => {
     try {
@@ -17,7 +17,7 @@ const SongList = ({ isTopTrack, searchQuery }) => {
         setSongList(allSongs);
         setSongs(allSongs);
         const filteredTopSongs = allSongs.filter((song) => song.top_track);
-        setFilteredSongs(isTopTrack ? filteredTopSongs : allSongs);
+        setTopSongs(isTopTrack ? filteredTopSongs : allSongs);
       }
     } catch (error) {
       console.error("Failed to fetch songs:", error);
@@ -45,6 +45,7 @@ const SongList = ({ isTopTrack, searchQuery }) => {
 
   const handleSongClick = (song) => {
     setCurrentSong(song);
+    setIsPlaying(true)
   };
   return (
     <div className="overflow-scroll h-full px-5 mb-24">
