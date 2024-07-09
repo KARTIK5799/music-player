@@ -127,7 +127,7 @@ const Controls = ({ onPlayPause, songUrl }) => {
         <div className="p-3 bg-gray-700 relative rounded-full cursor-pointer hover:bg-gray-600" onClick={handleMore}>
           {!moreOptionVisible ? <IoIosMore /> : <IoMdClose />}
           {moreOptionVisible && (
-            <div className='absolute bg-gray-700 top-[-6.5rem] flex-col w-[10rem] border left-[-3.5rem] px-3 py-3 rounded-lg flex'>
+            <div className='absolute bg-gray-700 top-[-6.5rem] flex-col w-[10rem] border left-[-2rem] md:left-[-3.5rem] px-3 py-3 rounded-lg flex'>
               <h2 className='flex gap-2 items-center'> <MdOutlinePlaylistAdd /> Add to Playlist</h2>
               <h2 className='flex gap-2 items-center'><CiHeart /> Like Music</h2>
               <h2 className='flex gap-2 items-center'><IoMdShareAlt /> Share</h2>
