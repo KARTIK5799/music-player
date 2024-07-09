@@ -57,7 +57,7 @@ const Player = () => {
   const coverUrl = currentSong.cover ? `https://cms.samespace.com/assets/${currentSong.cover}` : cover;
 
   return (
-    <div className='w-[95%] h-[90%]  md:w-[95%] md:h-[80%] flex justify-center flex-col p-5'>
+    <div className='w-[95%] h-[90%]  sm:w-[95%] md:h-[80%] lg:w-[60%] flex justify-center flex-col p-5'>
       <div className='text-white mb-4'>
         <h2 className='text-3xl font-bold'>{currentSong.name}</h2>
         <p className='text-gray-400 text-xl'>{currentSong.artist}</p>
